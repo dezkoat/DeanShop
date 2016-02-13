@@ -30,7 +30,7 @@ Base.prototype.setSize = function(width, height) {
 Base.prototype.getAccumulatedPosition = function() {
     if (!this.parent)
         return { x: this.x, y: this.y };
-    
+
     var parentPos = this.parent.getAccumulatedPosition();
     return { x: this.x + parentPos.x, y: this.y + parentPos.y };
 }
@@ -104,4 +104,7 @@ Base.prototype.onMouseUpSub = function(x, y) {
 }
 
 Base.prototype.onMouseUp = function(x, y) {
+}
+
+Base.prototype.onAttached = function(parent) {
 }

@@ -7,7 +7,7 @@ function rgb2gray(imgData) {
             data[idx + 0] = gray;
             data[idx + 1] = gray;
             data[idx + 2] = gray;
-            data[idx + 3] = 255;
+            data[idx + 3] = data[idx + 3];
         }
     }
 

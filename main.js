@@ -7,43 +7,90 @@ start(function() {
     var save = new Button("Save");
     var close = new Button("Close");
     var gray = new Button("Grayscale");
-    var s2x = new Button("Sampling 2x");
-    var s4x = new Button("Sampling 4x");
-    var s8x = new Button("Sampling 8x");
+    var ds2x = new Button("DSampling 2x");
+    var ds4x = new Button("DSampling 4x");
+    var ds8x = new Button("DSampling 8x");
     var quant8 = new Button("Quant 8");
     var quant4 = new Button("Quant 4");
-    var quant2 = new Button("Quant 2");
+    var quant1 = new Button("Quant 1");
+    var mask = new Button("Masking");
+    var us2x = new Button("USampling 2x");
+    var us4x = new Button("USampling 4x");
+    var us8x = new Button("USampling 8x");
+    var bl25 = new Button("Blend 25%");
+    var bl50 = new Button("Blend 50%");
+    var bl75 = new Button("Blend 75%");
+    var fliph = new Button("Flip H");
+    var flipv = new Button("Flip V");
+    var rot15 = new Button("Rotate 15");
+    var rot30 = new Button("Rotate 30");
+    var rot45 = new Button("Rotate 45");
+    var rot90 = new Button("Rotate 90");
+    var rot180 = new Button("Rotate 180");
+    var cutb = new Button("Cut");
+    var pasteb = new Button("Paste");
+    var wrapb = new Button("Wrap");
+    var kernelb = new Button("Kernel");
+    var scale50 = new Button("Scale 50%/150%");
+    var scale75 = new Button("Scale 75%/125%");
+    var scale125 = new Button("Scale 125%/75%");
+    var scale150 = new Button("Scale 150%/50%");
+    var btns = [save, close, gray, ds2x, ds4x, ds8x, wrapb, kernelb,
+                quant8, quant4, quant1, us2x, us4x, us8x, bl25, bl50, bl75,
+                mask, rot15, rot30, rot45, rot90, rot180, fliph, flipv, cutb,
+                scale50, scale75, scale125, scale150 ];
 
     world.box.attach(open, 10, 10, 84, 24);
     world.box.attach(save, 104, 10, 84, 24);
     world.box.attach(close, 198, 10, 84, 24);
     world.box.attach(gray, 292, 10, 84, 24);
-    world.box.attach(s2x, 386, 10, 84, 24);
-    world.box.attach(s4x, 480, 10, 84, 24);
-    world.box.attach(s8x, 574, 10, 84, 24);
+    world.box.attach(ds2x, 386, 10, 84, 24);
+    world.box.attach(ds4x, 480, 10, 84, 24);
+    world.box.attach(ds8x, 574, 10, 84, 24);
+    world.box.attach(scale50, 668, 10, 84, 24);
 
     world.box.attach(quant8, 10, 44, 84, 24);
     world.box.attach(quant4, 104, 44, 84, 24);
-    world.box.attach(quant2, 198, 44, 84, 24);
+    world.box.attach(quant1, 198, 44, 84, 24);
+    world.box.attach(mask, 292, 44, 84, 24);
+    world.box.attach(us2x, 386, 44, 84, 24);
+    world.box.attach(us4x, 480, 44, 84, 24);
+    world.box.attach(us8x, 574, 44, 84, 24);
+    world.box.attach(scale75, 668, 44, 84, 24);
 
-    world.box.attach(stage, 10, 100, 640, 480);
+    world.box.attach(bl25, 10, 78, 84, 24);
+    world.box.attach(bl50, 104, 78, 84, 24);
+    world.box.attach(bl75, 198, 78, 84, 24);
+    world.box.attach(fliph, 292, 78, 84, 24);
+    world.box.attach(flipv, 386, 78, 84, 24);
+    world.box.attach(cutb, 480, 78, 84, 24);
+    world.box.attach(pasteb, 574, 78, 84, 24);
+    world.box.attach(scale125, 668, 78, 84, 24);
 
-    save.setEnabled(false);
-    close.setEnabled(false);
-    gray.setEnabled(false);
-    s2x.setEnabled(false);
-    s4x.setEnabled(false);
-    s8x.setEnabled(false);
+    world.box.attach(rot15, 10, 112, 84, 24);
+    world.box.attach(rot30, 104, 112, 84, 24);
+    world.box.attach(rot45, 198, 112, 84, 24);
+    world.box.attach(rot90, 292, 112, 84, 24);
+    world.box.attach(rot180, 386, 112, 84, 24);
+    world.box.attach(kernelb, 480, 112, 84, 24);
+    world.box.attach(wrapb, 574, 112, 84, 24);
+    world.box.attach(scale150, 668, 112, 84, 24);
+
+    world.box.attach(stage, 10, 148, 640, 480);
+
+    pasteb.setEnabled(false);
+    for (var i in btns)
+        btns[i].setEnabled(false);
 
     open.setCallback(function() {
-        fileOpen();
+        fileOpen(fileShow);
     });
 
     save.setCallback(function() {
         var a = document.createElement("a");
         a.href = stage.canvas.toDataURL();
         a.download = "hasil.png";
-        
+
         var clickEvent = new MouseEvent("click", {
             "view": window,
             "bubbles": true,
@@ -55,12 +102,9 @@ start(function() {
 
     close.setCallback(function() {
         open.setEnabled(true);
-        save.setEnabled(false);
-        close.setEnabled(false);
-        gray.setEnabled(false);
-        s2x.setEnabled(false);
-        s4x.setEnabled(false);
-        s8x.setEnabled(false);
+        for (var i in btns)
+            btns[i].setEnabled(false);
+        pasteb.setEnabled(false);
         stage.clear();
     });
 
@@ -68,129 +112,184 @@ start(function() {
         stage.setImage(rgb2gray(stage.getImage()));
     });
 
-    s2x.setCallback(function() {
-        stage.setImage(sampling(stage.getImage(), 2));
+    ds2x.setCallback(function() {
+        stage.setImage(dsampling(stage.getImage(), 2));
     });
 
-    s4x.setCallback(function() {
-        stage.setImage(sampling(stage.getImage(), 4));
+    ds4x.setCallback(function() {
+        stage.setImage(dsampling(stage.getImage(), 4));
     });
 
-    s8x.setCallback(function() {
-        stage.setImage(sampling(stage.getImage(), 8));
+    ds8x.setCallback(function() {
+        stage.setImage(dsampling(stage.getImage(), 8));
+    });
+
+    us2x.setCallback(function() {
+        stage.setImage(usampling(stage.getImage(), 2));
+    });
+
+    us4x.setCallback(function() {
+        stage.setImage(usampling(stage.getImage(), 4));
+    });
+
+    us8x.setCallback(function() {
+        stage.setImage(usampling(stage.getImage(), 8));
     });
 
     quant8.setCallback(function() {
-        var opts = {
-            colors: 256,             // desired palette size
-            method: 2,               // histogram method, 2: min-population threshold within subregions; 1: global top-population
-            boxSize: [64,64],        // subregion dims (if method = 2)
-            boxPxls: 2,              // min-population threshold (if method = 2)
-            initColors: 4096,        // # of top-occurring colors  to start with (if method = 1)
-            minHueCols: 0,           // # of colors per hue group to evaluate regardless of counts, to retain low-count hues
-            dithKern: null,          // dithering kernel name, see available kernels in docs below
-            dithDelta: 0,            // dithering threshhold (0-1) e.g: 0.05 will not dither colors with <= 5% difference
-            dithSerp: false,         // enable serpentine pattern dithering
-            palette: [],             // a predefined palette to start with in r,g,b tuple format: [[r,g,b],[r,g,b]...]
-            reIndex: false,          // affects predefined palettes only. if true, allows compacting of sparsed palette once target palette size is reached. also enables palette sorting.
-            useCache: true,          // enables caching for perf usually, but can reduce perf in some cases, like pre-def palettes
-            cacheFreq: 10,           // min color occurance count needed to qualify for caching
-            colorDist: "euclidean",  // method used to determine color distance, can also be "manhattan"
-        };
-
-        var q = new RgbQuant(opts);
-
-        var img = stage.getImage();
-        q.sample(stage.canvas);
-        var pal = q.palette(true);
-        var out = q.reduce(stage.canvas);
-        var data = img.data;
-        for (var i = 0; i < data.length; ++i)
-            data[i] = out[i];
-
-        stage.setImage(img);
+        stage.setImage(quantize(stage.getImage(), 256));
     });
 
     quant4.setCallback(function() {
-        var opts = {
-            colors: 16,             // desired palette size
-            method: 2,               // histogram method, 2: min-population threshold within subregions; 1: global top-population
-            boxSize: [64,64],        // subregion dims (if method = 2)
-            boxPxls: 2,              // min-population threshold (if method = 2)
-            initColors: 4096,        // # of top-occurring colors  to start with (if method = 1)
-            minHueCols: 0,           // # of colors per hue group to evaluate regardless of counts, to retain low-count hues
-            dithKern: null,          // dithering kernel name, see available kernels in docs below
-            dithDelta: 0,            // dithering threshhold (0-1) e.g: 0.05 will not dither colors with <= 5% difference
-            dithSerp: false,         // enable serpentine pattern dithering
-            palette: [],             // a predefined palette to start with in r,g,b tuple format: [[r,g,b],[r,g,b]...]
-            reIndex: false,          // affects predefined palettes only. if true, allows compacting of sparsed palette once target palette size is reached. also enables palette sorting.
-            useCache: true,          // enables caching for perf usually, but can reduce perf in some cases, like pre-def palettes
-            cacheFreq: 10,           // min color occurance count needed to qualify for caching
-            colorDist: "euclidean",  // method used to determine color distance, can also be "manhattan"
-        };
-
-        var q = new RgbQuant(opts);
-
-        var img = stage.getImage();
-        q.sample(stage.canvas);
-        var pal = q.palette(true);
-        var out = q.reduce(stage.canvas);
-        var data = img.data;
-        for (var i = 0; i < data.length; ++i)
-            data[i] = out[i];
-
-        stage.setImage(img);
+        stage.setImage(quantize(stage.getImage(), 16));
     });
 
-    quant2.setCallback(function() {
-        var opts = {
-            colors: 2,             // desired palette size
-            method: 2,               // histogram method, 2: min-population threshold within subregions; 1: global top-population
-            boxSize: [64,64],        // subregion dims (if method = 2)
-            boxPxls: 2,              // min-population threshold (if method = 2)
-            initColors: 4096,        // # of top-occurring colors  to start with (if method = 1)
-            minHueCols: 0,           // # of colors per hue group to evaluate regardless of counts, to retain low-count hues
-            dithKern: null,          // dithering kernel name, see available kernels in docs below
-            dithDelta: 0,            // dithering threshhold (0-1) e.g: 0.05 will not dither colors with <= 5% difference
-            dithSerp: false,         // enable serpentine pattern dithering
-            palette: [],             // a predefined palette to start with in r,g,b tuple format: [[r,g,b],[r,g,b]...]
-            reIndex: false,          // affects predefined palettes only. if true, allows compacting of sparsed palette once target palette size is reached. also enables palette sorting.
-            useCache: true,          // enables caching for perf usually, but can reduce perf in some cases, like pre-def palettes
-            cacheFreq: 10,           // min color occurance count needed to qualify for caching
-            colorDist: "euclidean",  // method used to determine color distance, can also be "manhattan"
-        };
+    quant1.setCallback(function() {
+        stage.setImage(quantize(stage.getImage(), 2));
+    });
 
-        var q = new RgbQuant(opts);
+    bl25.setCallback(function() {
+        fileOpen(fileBlend25);
+    });
 
-        var img = stage.getImage();
-        q.sample(stage.canvas);
-        var pal = q.palette(true);
-        var out = q.reduce(stage.canvas);
-        var data = img.data;
-        for (var i = 0; i < data.length; ++i)
-            data[i] = out[i];
+    bl50.setCallback(function() {
+        fileOpen(fileBlend50);
+    });
 
-        stage.setImage(img);
+    bl75.setCallback(function() {
+        fileOpen(fileBlend75);
+    });
+
+    fliph.setCallback(function() {
+        stage.setImage(flip(stage.getImage(), HORIZONTAL));
+    });
+
+    flipv.setCallback(function() {
+        stage.setImage(flip(stage.getImage(), VERTICAL));
+    });
+
+    mask.setCallback(function() {
+        fileOpen(fileMask);
+    });
+
+    rot15.setCallback(function() {
+        stage.setImage(rot(stage.getImage(), 15));
+    });
+
+    rot30.setCallback(function() {
+        stage.setImage(rot(stage.getImage(), 30));
+    });
+
+    rot45.setCallback(function() {
+        stage.setImage(rot(stage.getImage(), 45));
+    });
+
+    rot90.setCallback(function() {
+        stage.setImage(rot(stage.getImage(), 90));
+    });
+
+    rot180.setCallback(function() {
+        stage.setImage(rot(stage.getImage(), 180));
+    });
+
+    cutb.setCallback(function() {
+        stage.setImage(cut(stage.getImage(), 30, 20, 220, 200));
+        pasteb.setEnabled(true);
+    });
+
+    pasteb.setCallback(function() {
+        stage.setImage(paste(stage.getImage(), 20, 20));
+    });
+
+    kernelb.setCallback(function() {
+        stage.setImage(kernel(stage.getImage(), EDGE3));
+    });
+
+    wrapb.setCallback(function() {
+        stage.setImage(wrap(stage.getImage()));
+    });
+
+    scale50.setCallback(function() {
+        stage.setImage(scale(stage.getImage(), 0.5, 1.5));
+    });
+
+    scale75.setCallback(function() {
+        stage.setImage(scale(stage.getImage(), 0.75, 1.25));
+    });
+
+    scale125.setCallback(function() {
+        stage.setImage(scale(stage.getImage(), 1.25, 0.75));
+    });
+
+    scale150.setCallback(function() {
+        stage.setImage(scale(stage.getImage(), 1.5, 0.5));
     });
 
     var input = null;
-    function fileOpen() {
+    function fileOpen(arg) {
         input = document.createElement("input");
-        input.addEventListener("change", loadURL, false);
+        input.addEventListener("change", arg, false);
         input.type = "file";
         input.click();
     }
 
-    function loadURL(e) {
-        input.removeEventListener("change", loadURL, false);
+    function fileShow(e) {
+        input.removeEventListener("change", fileShow, false);
         stage.loadImage(URL.createObjectURL(e.target.files[0]));
 
         open.setEnabled(false);
-        save.setEnabled(true);
-        close.setEnabled(true);
-        gray.setEnabled(true);
-        s2x.setEnabled(true);
-        s4x.setEnabled(true);
-        s8x.setEnabled(true);
+        for (var i in btns)
+            btns[i].setEnabled(true);
+
+        if (mem)
+            pasteb.setEnabled(true);
+    }
+
+    function fileBlend25(e) {
+        fileBlend(e, 0.25);
+    }
+
+    function fileBlend50(e) {
+        fileBlend(e, 0.5);
+    }
+
+    function fileBlend75(e) {
+        fileBlend(e, 0.75);
+    }
+
+    function fileBlend(e, val) {
+        input.removeEventListener("change", fileBlend, false);
+
+        var image = new Image();
+        image.src = URL.createObjectURL(e.target.files[0]);
+
+        image.onload = function() {
+            var canvas = document.createElement("canvas");
+            var context = canvas.getContext("2d");
+            canvas.width = image.width;
+            canvas.height = image.height;
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+            var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
+            stage.setImage(blend(stage.getImage(), imgData, val));
+        }
+    }
+
+    function fileMask(e) {
+        input.removeEventListener("change", fileMask, false);
+
+        var image = new Image();
+        image.src = URL.createObjectURL(e.target.files[0]);
+
+        image.onload = function() {
+            var canvas = document.createElement("canvas");
+            var context = canvas.getContext("2d");
+            canvas.width = image.width;
+            canvas.height = image.height;
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+            var imgData = context.getImageData(0, 0, canvas.width, canvas.height);
+            stage.setImage(masking(stage.getImage(), imgData));
+        }
     }
 });

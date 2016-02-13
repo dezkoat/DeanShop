@@ -32,6 +32,7 @@ SolidBox.prototype.attach = function(obj, x, y, width, height) {
     obj.setPosition(x, y);
     obj.setSize(width, height);
     obj.setParent(this);
+    obj.onAttached(this);
     this.onResize();
 }
 
