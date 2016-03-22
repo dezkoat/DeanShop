@@ -12,7 +12,13 @@ function masking(imgData1, imgData2) {
             var gray = data2[idx2 + 0] * 0.2989
                      + data2[idx2 + 1] * 0.5870
                      + data2[idx2 + 2] * 0.1140;
-            data1[idx1 + 3] = 255 - gray;
+            data1[idx1 + 0] *= gray / 255.0;
+            data1[idx1 + 1] *= gray / 255.0;
+            data1[idx1 + 2] *= gray / 255.0;
+            if (isFFT) {
+                real[y * w + x] *= gray / 255.0;
+                imag[y * w + x] *= gray / 255.0;
+            }
         }
     }
 

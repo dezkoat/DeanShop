@@ -13,41 +13,56 @@ function quantize(imgData, N) {
         var area = queue.shift();
         var idx = area[0];
         var arr = area[1];
-        arr.sort(function(a, b) {
-            if (a[idx] < b[idx])
-                return 1;
-            if (a[idx] > b[idx])
-                return -1;
-            return 0;
-        });
+        var mean = 0;
+        for (var i = 0; i < arr.length; ++i)
+            mean += arr[i][idx] / arr.length;
 
-        var medianValue = arr[Math.floor(arr.length / 2)][idx];
-        var medianIndex = 0;
-        while (medianIndex < arr.length && arr[medianIndex][idx] != medianValue)
-            ++medianIndex;
-
-        if (medianIndex == 0) {
-            while (medianIndex < arr.length && arr[medianIndex][idx] == medianValue)
-                ++medianIndex;
-            --medianIndex;
+        var arr1 = [];
+        var arr2 = [];
+        for (var i = 0; i < arr.length; ++i) {
+            if (arr[i][idx] <= mean)
+                arr1.push(arr[i]);
+            else
+                arr2.push(arr[i]);
         }
 
-        if (medianIndex == (arr.length - 1)) {
-            queue.push([
-                (idx + 1) % 3,
-                arr
-            ]);
-        } else {
-            queue.push([
-                (idx + 1) % 3,
-                arr.slice(0, medianIndex)
-            ]);
+        queue.push([(idx + 1) % 3, arr1]);
+        queue.push([(idx + 1) % 3, arr2]);
+        // arr.sort(function(a, b) {
+        //     if (a[idx] < b[idx])
+        //         return 1;
+        //     if (a[idx] > b[idx])
+        //         return -1;
+        //     return 0;
+        // });
 
-            queue.push([
-                (idx + 1) % 3,
-                arr.slice(medianIndex + 1)
-            ]);
-        }
+        // var medianValue = arr[Math.floor(arr.length / 2)][idx];
+        // var medianIndex = 0;
+        // while (medianIndex < arr.length && arr[medianIndex][idx] != medianValue)
+        //     ++medianIndex;
+
+        // if (medianIndex == 0) {
+        //     while (medianIndex < arr.length && arr[medianIndex][idx] == medianValue)
+        //         ++medianIndex;
+        //     --medianIndex;
+        // }
+
+        // if (medianIndex == (arr.length - 1)) {
+        //     queue.push([
+        //         (idx + 1) % 3,
+        //         arr
+        //     ]);
+        // } else {
+        //     queue.push([
+        //         (idx + 1) % 3,
+        //         arr.slice(0, medianIndex)
+        //     ]);
+
+        //     queue.push([
+        //         (idx + 1) % 3,
+        //         arr.slice(medianIndex + 1)
+        //     ]);
+        // }
 
         if (queue.length == N)
             break;

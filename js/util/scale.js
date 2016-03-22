@@ -4,8 +4,8 @@ function scale(imgData, sx, sy) {
     var xmid = w / 2;
     var ymid = h / 2;
 
-    var w2 = w * sx;
-    var h2 = h * sy;
+    var w2 = Math.floor(w * sx);
+    var h2 = Math.floor(h * sy);
     var offx = Math.floor((w2 - w) / 2);
     var offy = Math.floor((h2 - h) / 2);
 

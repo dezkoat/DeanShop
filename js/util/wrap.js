@@ -48,7 +48,7 @@ function wrap(imgData) {
 
 function wrapping(x, y, xmid, ymid) {
     var ro = vectorLen(vectorDiff([x, y], [xmid, ymid]));
-    var th = Math.PI * ro / 256;
+    var th = Math.PI * ro * 0.005;
 
     var xn = (x - xmid) * Math.cos(th) - (y - ymid) * Math.sin(th) + xmid;
     var yn = (y - ymid) * Math.cos(th) + (x - xmid) * Math.sin(th) + ymid;

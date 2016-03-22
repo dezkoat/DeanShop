@@ -32,13 +32,13 @@ start(function() {
     var wrapb = new Button("Wrap");
     var kernelb = new Button("Kernel");
     var scale50 = new Button("Scale 50%/150%");
-    var scale75 = new Button("Scale 75%/125%");
-    var scale125 = new Button("Scale 125%/75%");
-    var scale150 = new Button("Scale 150%/50%");
+    var bfft = new Button("FFT");
+    var bifft = new Button("iFFT");
+    var histeqb = new Button("Hist Equalization");
     var btns = [save, close, gray, ds2x, ds4x, ds8x, wrapb, kernelb,
                 quant8, quant4, quant1, us2x, us4x, us8x, bl25, bl50, bl75,
                 mask, rot15, rot30, rot45, rot90, rot180, fliph, flipv, cutb,
-                scale50, scale75, scale125, scale150 ];
+                scale50, bfft, bifft, histeqb ];
 
     world.box.attach(open, 10, 10, 84, 24);
     world.box.attach(save, 104, 10, 84, 24);
@@ -56,7 +56,7 @@ start(function() {
     world.box.attach(us2x, 386, 44, 84, 24);
     world.box.attach(us4x, 480, 44, 84, 24);
     world.box.attach(us8x, 574, 44, 84, 24);
-    world.box.attach(scale75, 668, 44, 84, 24);
+    world.box.attach(bfft, 668, 44, 84, 24);
 
     world.box.attach(bl25, 10, 78, 84, 24);
     world.box.attach(bl50, 104, 78, 84, 24);
@@ -65,7 +65,7 @@ start(function() {
     world.box.attach(flipv, 386, 78, 84, 24);
     world.box.attach(cutb, 480, 78, 84, 24);
     world.box.attach(pasteb, 574, 78, 84, 24);
-    world.box.attach(scale125, 668, 78, 84, 24);
+    world.box.attach(bifft, 668, 78, 84, 24);
 
     world.box.attach(rot15, 10, 112, 84, 24);
     world.box.attach(rot30, 104, 112, 84, 24);
@@ -74,7 +74,7 @@ start(function() {
     world.box.attach(rot180, 386, 112, 84, 24);
     world.box.attach(kernelb, 480, 112, 84, 24);
     world.box.attach(wrapb, 574, 112, 84, 24);
-    world.box.attach(scale150, 668, 112, 84, 24);
+    world.box.attach(histeqb, 668, 112, 84, 24);
 
     world.box.attach(stage, 10, 148, 640, 480);
 
@@ -213,16 +213,16 @@ start(function() {
         stage.setImage(scale(stage.getImage(), 0.5, 1.5));
     });
 
-    scale75.setCallback(function() {
-        stage.setImage(scale(stage.getImage(), 0.75, 1.25));
+    bfft.setCallback(function() {
+        stage.setImage(imfft(stage.getImage()));
     });
 
-    scale125.setCallback(function() {
-        stage.setImage(scale(stage.getImage(), 1.25, 0.75));
+    bifft.setCallback(function() {
+        stage.setImage(imifft(stage.getImage()));
     });
 
-    scale150.setCallback(function() {
-        stage.setImage(scale(stage.getImage(), 1.5, 0.5));
+    histeqb.setCallback(function() {
+        stage.setImage(histeq(stage.getImage(), 1.5, 0.5));
     });
 
     var input = null;

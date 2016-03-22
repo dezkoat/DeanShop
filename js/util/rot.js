@@ -4,10 +4,10 @@ function rot(imgData, d) {
     var h = imgData.height;
     var xmid = w / 2;
     var ymid = h / 2;
-    var topright = rotateCoord(0, w, xmid, ymid, d);
+    var topright = rotateCoord(w, 0, xmid, ymid, d);
     var topleft = rotateCoord(0, 0, xmid, ymid, d);
-    var bottomright = rotateCoord(h, w, xmid, ymid, d);
-    var bottomleft = rotateCoord(h, 0, xmid, ymid, d);
+    var bottomright = rotateCoord(w, h, xmid, ymid, d);
+    var bottomleft = rotateCoord(0, h, xmid, ymid, d);
 
     var ymin = Math.min(Math.min(topright[1], topleft[1]),
                         Math.min(bottomright[1], bottomleft[1]));
